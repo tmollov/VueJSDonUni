@@ -1,19 +1,30 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<body id="app">
+  <app-navigation :IsLogged="IsLogged"></app-navigation>
+
+  <app-home-guest v-if="!IsLogged"></app-home-guest>
+  <app-footer></app-footer>
+</body>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AppFooter from "./components/core/Footer";
+import AppNavigation from './components/core/Navigation';
+import AppHomeGuest from './components/home/Guest';
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    AppNavigation,
+    AppHomeGuest,
+    AppFooter
+  },
+  data(){
+    return {
+    IsLogged: false
+    }
   }
-}
+};
 </script>
 
 <style>
