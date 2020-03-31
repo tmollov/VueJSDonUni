@@ -4,12 +4,13 @@ import App from "./App.vue";
 import routes from "./routes";
 import store from "./store/store"
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faDonate, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faDonate, faPencilAlt, faSearchDollar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 
 library.add(faDonate)
 library.add(faPencilAlt);
+library.add(faSearchDollar)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
