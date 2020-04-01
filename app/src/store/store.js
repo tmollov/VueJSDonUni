@@ -6,17 +6,22 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    IsUserLogged: false
+    IsUserLogged: false,
+    UserEmail:""
   },
   mutations: {
     changeLogState(state, IsUserLogged) {
       state.IsUserLogged = IsUserLogged;
+    },
+    changeEmailState(state, UserEmail) {
+      state.UserEmail = UserEmail;
     }
   },
   getters: {
-    IsUserLogged: state => state.IsUserLogged
+    IsUserLogged: state => state.IsUserLogged,
+    UserEmail: state => state.UserEmail
   },
   plugins:[createPersistedState({
-    paths: ['IsUserLogged']
+    paths: ['IsUserLogged', "UserEmail"]
   })]
 });
