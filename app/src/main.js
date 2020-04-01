@@ -6,7 +6,8 @@ import store from "./store/store"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faDonate, faPencilAlt, faSearchDollar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
+import firebase from 'firebase';
+import firebaseConfig from 'firebaseConfig';
 
 library.add(faDonate)
 library.add(faPencilAlt);
@@ -14,8 +15,8 @@ library.add(faSearchDollar)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+firebase.initializeApp(firebaseConfig);
 Vue.config.productionTip = false;
-
 
 Vue.use(VueRouter);
 
