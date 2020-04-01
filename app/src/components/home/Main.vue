@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.getters.IsUserLogged;
+      return this.$store.getters.User;
     }
   }
 };
