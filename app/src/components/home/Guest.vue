@@ -2,11 +2,7 @@
   <div class="container mainDiv">
     <div class="row align-items-center my-5">
       <div class="col-lg-12">
-        <img
-          class="img-fluid rounded mb-4 mb-lg-0"
-          src="https://www.firstmid.com/wp-content/uploads/OpenforBusiness_SBALoan-900x400.png"
-          alt="HomeGuestPageImage"
-        />
+        <font-awesome-icon icon="briefcase" />
       </div>
       <div class="col-lg-12 supportDiv">
         <h1 class="font-weight-light">Does your business need support?</h1>
@@ -30,9 +26,12 @@ export default {
   padding-top: 3%;
 }
 
-img {
+svg {
   margin: 0 auto;
   display: block;
+  font-size: 200px;
+  color: #343A40;
+
 }
 
 .supportDiv {
