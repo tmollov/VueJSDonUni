@@ -16,7 +16,7 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li v-if="$store.getters.IsUserLogged" class="nav-item">
+          <li v-if="$store.getters.User" class="nav-item">
             <router-link class="nav-link" to="/cause/create">Create Cause</router-link>
           </li>
         </ul>
@@ -24,13 +24,13 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li v-if="$store.getters.IsUserLogged" class="nav-item">
+          <li v-if="$store.getters.User" class="nav-item">
             <a class="nav-link" href="/causes/my">My Causes</a>
           </li>
-          <li v-if="$store.getters.IsUserLogged" class="nav-item">
+          <li v-if="$store.getters.User" class="nav-item">
             <a class="nav-link" href="#logout" @click.prevent="logout()">Logout {{email}}</a>
           </li>
-          <li v-if="!$store.getters.IsUserLogged" class="nav-item">
+          <li v-if="!$store.getters.User" class="nav-item">
             <router-link class="nav-link" to="/login">Login</router-link>
           </li>
         </ul>
@@ -40,16 +40,27 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   name: "app-navigation",
   methods: {
     logout() {
-      this.$store.commit("changeLogState", false);
+      firebase
+        .auth()
+        .signOut()
+        .then(res => {
+          this.$store.commit("changeUserState", null);
+          this.$router.push("/")
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   computed: {
     email() {
-      return this.$store.getters.UserEmail;
+      return this.$store.getters.User.email.split("@")[0];
     }
   }
 };
