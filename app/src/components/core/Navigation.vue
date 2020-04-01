@@ -28,7 +28,7 @@
             <a class="nav-link" href="/causes/my">My Causes</a>
           </li>
           <li v-if="$store.getters.IsUserLogged" class="nav-item">
-            <a class="nav-link" href="#logout" @click.prevent="logout()">Logout (CURRENT USERNAME)</a>
+            <a class="nav-link" href="#logout" @click.prevent="logout()">Logout {{email}}</a>
           </li>
           <li v-if="!$store.getters.IsUserLogged" class="nav-item">
             <router-link class="nav-link" to="/login">Login</router-link>
@@ -42,17 +42,21 @@
 <script>
 export default {
   name: "app-navigation",
-  methods:{
-    logout(){
-      this.$store.commit("changeLogState",false);
-      this.$router.push("/");
+  methods: {
+    logout() {
+      this.$store.commit("changeLogState", false);
+    }
+  },
+  computed: {
+    email() {
+      return this.$store.getters.UserEmail;
     }
   }
 };
 </script>
 
 <style scoped>
-nav a{
+nav a {
   font-size: 20px;
 }
 </style>
