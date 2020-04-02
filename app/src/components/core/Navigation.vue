@@ -25,13 +25,13 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li v-if="$store.getters.User" class="nav-item">
-            <a class="nav-link" href="/causes/my">My Causes</a>
+            <router-link class="nav-link" to="/profile">Profile</router-link>
           </li>
           <li v-if="$store.getters.User" class="nav-item">
-            <a class="nav-link" href="#logout" @click.prevent="logout()">Logout {{email}}</a>
+            <a class="nav-link" href="#logout" @click.prevent="logout()">Logout</a>
           </li>
           <li v-if="!$store.getters.User" class="nav-item">
-            <router-link class="nav-link" to="/login">Login</router-link>
+            <router-link class="nav-link" to="login">Login</router-link>
           </li>
         </ul>
       </div>
@@ -49,7 +49,7 @@ export default {
       firebase
         .auth()
         .signOut()
-        .then(res => {
+        .then((res) => {
           this.$store.commit("changeUserState", null);
           this.$router.push("/")
         })
@@ -59,9 +59,6 @@ export default {
     }
   },
   computed: {
-    email() {
-      return this.$store.getters.User.email.split("@")[0];
-    }
   }
 };
 </script>
