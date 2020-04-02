@@ -4,6 +4,9 @@
       <form>
         <p class="h4 py-4">Login</p>
         <hr />
+        <div v-if="loginErrorMsg">
+          {{loginErrorMsg}}
+        </div>
         <label
           for="email"
           class="grey-text font-weight-light w-100 text-left font-weight-bold"
@@ -17,7 +20,6 @@
           class="grey-text font-weight-light w-100 text-left font-weight-bold"
         >Password</label>
         <input id="password" type="password" class="form-control" v-model="password" />
-
         <div class="text-center py-4 mt-3">
           <button v-if="!loading" class="btn btn-info" @click.prevent="login">Log In</button>
           <app-loader-ring v-if="loading" :width="20" :height="20"></app-loader-ring>
@@ -44,7 +46,8 @@ export default {
     return {
       email: "",
       password: "",
-      loading: false
+      loading: false,
+      loginErrorMsg:""
     };
   },
   methods: {
@@ -62,6 +65,7 @@ export default {
         })
         .catch(err => {
           console.log(err);
+          this.loginErrorMsg = err.message;
           this.loading = false;
         });
     }
