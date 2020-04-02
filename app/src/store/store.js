@@ -6,17 +6,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    User:null
+    User: null
   },
   mutations: {
     changeUserState(state, User) {
       state.User = User;
-    },
+    }
   },
   getters: {
     User: state => state.User
   },
-  plugins:[createPersistedState({
-    paths: [ "User"]
-  })]
+  plugins: [
+    createPersistedState({
+      paths: ["User"]
+    })
+  ]
 });
