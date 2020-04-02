@@ -115,7 +115,7 @@ export default {
     };
   },
   methods: {
-    async register() {
+    register() {
       this.loading = true;
       if (this.password !== this.cpass) {
         this.errors = "Passwords doesn't match";
