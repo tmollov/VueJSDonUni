@@ -1,31 +1,45 @@
 <template>
   <div class="container dashboardDiv">
-    <!-- <h1 class="text-center">NO CAUSES :(</h1> -->
-    <div style="margin-bottom:25%;" class="row">
-      <div class="col-lg-12">
-        <div class="card mt-4 borderRadius">
-          <img
-            class="card-img-top img-fluid borderRadius"
-            src="https://cdn.pixabay.com/photo/2017/01/20/00/30/maldives-1993704_960_720.jpg"
-            alt
-          />
-          <div class="card-body">
-            <h3 class="card-title">CAUSE Title</h3>
-            <p class="card-text">CAUSE DESCRIPTION</p>
-            <router-link to="/cause/detail" href class="btn btn-success">
-              Become a donor
-              <font-awesome-icon icon="donate" />
-            </router-link>
-          </div>
+    <transition name="fadeOut">
+      <app-loader v-if="isLoading" class="loadingRing"></app-loader>
+    </transition>
+
+    <transition name="fadeIn">
+      <div class="row causeDiv" v-if="!isLoading">
+        <div class="col-lg-10 mx-auto">
+          <app-no-causes v-if="causes.length == 0"></app-no-causes>
+
+          <template v-else>
+            <AppCauses :causes="causes"></AppCauses>
+          </template>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
+import AppNoCauses from "../cause/NoCauses";
+import AppCauses from "./common/Causes";
+
 export default {
-  name: "app-home-dashboard"
+  name: "app-home-dashboard",
+  components: {
+    AppNoCauses,
+    AppCauses
+  },
+  props: {
+    causes: Object
+  },
+  computed: {
+    isLoading() {
+      if (this.causes != null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
 };
 </script>
 
@@ -35,13 +49,32 @@ export default {
   padding-top: 3%;
 }
 
-.borderRadius {
-  border-radius: 25px;
+.causeDiv {
+  margin-bottom: 25%;
 }
 
-img {
-  max-width: 1200px;
-  height: auto;
-  border-bottom-left-radius: none !important;
+.loadingRing {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fadeIn-enter-active,
+.fadeIn-leave-active {
+  transition: opacity 0.5s;
+}
+.fadeIn-enter, .fadeIn-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.fadeOut-enter-active,
+.fadeOut-leave-active {
+  transition: opacity 0.5s;
+}
+.fadeOut-leave, .fadeOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
