@@ -11,8 +11,11 @@ import {
   faBriefcase
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import firebaseConfig from "./firebaseConfig";
+import Vuelidate from "vuelidate";
+
+import AppLoader from "./components/core/PureRingLoader";
 
 library.add(faDonate);
 library.add(faPencilAlt);
@@ -20,19 +23,25 @@ library.add(faSearchDollar);
 library.add(faBriefcase);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
-
-firebase.initializeApp(firebaseConfig);
 Vue.config.productionTip = false;
 
 Vue.use(VueRouter);
+Vue.use(Vuelidate);
+
+firebase.initializeApp(firebaseConfig);
 
 const router = new VueRouter({
   mode: "history",
   routes
 });
 
+
+Vue.component("app-loader", AppLoader);
+
 new Vue({
   render: h => h(App),
   router,
-  store
+  store,
+  firebase
 }).$mount("#app");
+
