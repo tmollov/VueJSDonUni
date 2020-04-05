@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <div class="card mt-2 borderRadius" v-for="(cause, index) in causes" :key="index">
-      <img class="card-img-top img-fluid borderRadius" :src="cause.image" />
-      <!-- <img class="card-img-top img-fluid borderRadius" :src="cause.image" /> -->
-      <!-- <font-awesome-icon class="defImage" icon="briefcase" /> -->
-      <div class="card-body border-top">
-        <h3 class="card-title">{{cause.title}}</h3>
-        <p class="card-text">{{cause.description}}</p>
+  <div class="row">
+    <div
+      class="col-lg-5 p-0 d-flex flex-column justify-content-between my-3 mx-auto borderRadius border border-secondary"
+      v-for="(cause, index) in causes"
+      :key="index"
+    >
+      <div class="imageDiv mx-auto m-2">
+        <img :src="cause.image" alt="Image">
+      </div>
+      <div class="card-body d-flex flex-column">
+        <h3 class="card-title text-center">{{cause.title}}</h3>
         <router-link :to="{ name: 'causeDetail', params: { id: index }}" class="btn btn-success">
           Become a donor
           <font-awesome-icon icon="donate" />
@@ -22,8 +25,7 @@ export default {
   props: {
     causes: Object
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 
@@ -36,17 +38,11 @@ export default {
   font-size: 1em;
 }
 
-img {
-  max-width: 1200px;
-  border: 0px solid;
-  height: auto;
-  border-bottom-left-radius: none !important;
-}
-
-.defImage {
-  margin: 0 auto;
+.imageDiv img {
   display: block;
-  font-size: 200px;
-  color: #343a40;
+  max-width:400px;
+  max-height:200px;
+  width: auto;
+  height: auto;
 }
 </style>
