@@ -1,9 +1,12 @@
 <template>
-  <div class="container mainDiv my-5">
-    <div class="row align-items-center my-5">
-      <div class="col-lg-12">
-          <h1>Something went wrong!</h1>
-      </div>
+  <div class="my-5 row">
+    <div class="mx-auto text-center my-5">
+      <font-awesome-icon icon="exclamation-triangle" />
+      <h1 class="mt-4 mb-5">Something went wrong!</h1>
+      <h4>
+        Back to
+        <router-link :to="{name:'home'}">Home</router-link>
+      </h4>
     </div>
   </div>
 </template>
@@ -15,18 +18,7 @@ export default {
 </script>
 
 <style scoped>
-.mainDiv {
-  margin-top: 3%;
-  padding-top: 3%;
-}
-
-img {
-  margin: 0 auto;
-  display: block;
-}
-
-.supportDiv {
-  text-align: center;
-  margin-top: 5%;
+svg {
+  font-size: 200px;
 }
 </style>
