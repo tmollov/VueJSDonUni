@@ -4,24 +4,54 @@
       <form>
         <p class="h4 py-4">Login</p>
         <hr />
-        <div v-if="loginErrorMsg">
-          {{loginErrorMsg}}
-        </div>
+        <div v-if="loginErrorMsg">{{loginErrorMsg}}</div>
         <label
           for="email"
           class="grey-text font-weight-light w-100 text-left font-weight-bold"
-        >Username</label>
-        <input id="email" type="email" class="form-control" v-model="email" />
-
+        >Email</label>
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          :class="{redBorder:$v.email.$error}"
+          v-model.trim="email"
+          @blur="$v.email.$touch"
+          placeholder="You email here..."
+        />
+        <template v-if="$v.email.$error">
+          <div class="error text-danger" v-if="!$v.email.required">Email cannot be empty!</div>
+          <div class="error text-danger" v-if="!$v.email.email">Invalid Email!</div>
+        </template>
         <br />
 
         <label
           for="password"
           class="grey-text font-weight-light w-100 text-left font-weight-bold"
         >Password</label>
-        <input id="password" type="password" class="form-control" v-model="password" />
+        <input
+          id="password"
+          :type="typePass"
+          class="form-control"
+          :class="{redBorder:$v.password.$error}"
+          v-model.trim="password"
+          maxlength="50"
+          minlength="6"
+          @blur="$v.password.$touch"
+          placeholder="You password here..."
+        />
+        <template v-if="$v.password.$error">
+          <div class="error text-danger" v-if="!$v.password.required">Password cannot be empty!</div>
+          <div
+            class="error text-danger"
+            v-else-if="!$v.password.minLength"
+          >Password must be least 6 charachter long.</div>
+          <div
+            class="error text-danger"
+            v-else-if="!$v.password.maxLength"
+          >Password should not raise 50 charachter long.</div>
+        </template>
         <div class="text-center py-4 mt-3">
-          <button v-if="!loading" class="btn btn-info" @click.prevent="login">Log In</button>
+          <button :disabled="$v.$invalid" v-if="!loading" class="btn btn-info" @click.prevent="login">Log In</button>
           <app-loader-ring v-if="loading" :width="20" :height="20"></app-loader-ring>
           <p>
             Don't have an account?
@@ -36,9 +66,28 @@
 <script>
 import firebase from "firebase";
 import AppLoaderRing from "../core/PureRingLoader";
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  minLength,
+  maxLength,
+  email
+} from "vuelidate/lib/validators";
 
 export default {
   name: "app-login",
+  mixins: [validationMixin],
+  validations: {
+    email: {
+      required,
+      email
+    },
+    password: {
+      required,
+      minLength: minLength(6),
+      maxLength: maxLength(50)
+    }
+  },
   components: {
     AppLoaderRing
   },
@@ -47,7 +96,8 @@ export default {
       email: "",
       password: "",
       loading: false,
-      loginErrorMsg:""
+      loginErrorMsg: "",
+      typePass: "password"
     };
   },
   methods: {
@@ -57,11 +107,10 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          console.log(user);
-          this.$store.commit("changeUserState", user.user);
+        .then((res) => {
+          this.$store.commit("changeUserState", res.user);
           this.loading = false;
-          this.$router.push("/")
+          this.$router.push({name:'home'});
         })
         .catch(err => {
           console.log(err);
@@ -72,9 +121,9 @@ export default {
   },
   created() {
     if (this.$store.getters.User) {
-      this.$router.push("/")
+      this.$router.push({name:'home'});
     }
-  },
+  }
 };
 </script>
 
@@ -83,5 +132,9 @@ export default {
   margin: 0 auto;
   margin-bottom: 5%;
   margin-top: 7%;
+}
+
+.redBorder {
+  border-color: red;
 }
 </style>
