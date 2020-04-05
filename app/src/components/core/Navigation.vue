@@ -49,17 +49,16 @@ export default {
       firebase
         .auth()
         .signOut()
-        .then((res) => {
+        .then(res => {
           this.$store.commit("changeUserState", null);
-          this.$router.push("/")
+          this.$store.commit("changeUserInfoState", null);
         })
         .catch(err => {
           console.log(err);
         });
     }
   },
-  computed: {
-  }
+  computed: {}
 };
 </script>
 
