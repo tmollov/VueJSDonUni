@@ -4,6 +4,7 @@ import Register from "./components/auth/Register.vue";
 import CauseCreate from "./components/cause/Create.vue";
 import CauseDetail from "./components/cause/Detail.vue";
 import Profile from "./components/profile/Profile.vue";
+import ProfileEdit from "./components/profile/Edit.vue"
 import WelcomeNewUser from './components/profile/Welcome.vue'
 import NotFound from "./components/core/NotFound.vue";
 
@@ -33,10 +34,20 @@ export default [
   },
   {
     name: "welcome",
-    path: "/welcome",
+    path: "/profile/welcome",
     component: WelcomeNewUser,
     beforeEnter: (to, from, next) => {
       if (to.name == "welcome" && !store.getters.User) {
+        next({ name: "login" });
+      } else next();
+    }
+  },
+  {
+    name: "profileEdit",
+    path: "/profile/edit",
+    component: ProfileEdit,
+    beforeEnter: (to, from, next) => {
+      if (to.name == "profileEdit" && !store.getters.User) {
         next({ name: "login" });
       } else next();
     }
