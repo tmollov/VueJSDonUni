@@ -76,8 +76,8 @@
 
 <script>
 import firebase from "firebase";
-import { validationMixin } from "vuelidate";
 import PureRingLoader from "../core/PureRingLoader";
+import { validationMixin } from "vuelidate";
 import {
   required,
   minLength,
@@ -126,14 +126,18 @@ export default {
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(
-          function(user) {
-            if (confirm("User registered! Click OK to redirect.")) {
-              this.$store.commit("changeUserState", user);
-              this.loading = false;
-              this.$router.push("/");
+          user => {
+            console.log(user);
+
+            this.$store.commit("changeUserState", user);
+            this.loading = false;
+            if (user.additionalUserInfo.isNewUser) {
+              this.$router.push({ name: "welcome" });
+              return;
             }
+            this.$router.push({ name: "home" });
           },
-          function(err) {
+          err => {
             alert("Oops. " + err.message);
             this.loading = false;
           }
@@ -149,9 +153,9 @@ export default {
   },
   created() {
     if (this.$store.getters.User) {
-      this.$router.push("/")
+      this.$router.push("/");
     }
-  },
+  }
 };
 </script>
 
