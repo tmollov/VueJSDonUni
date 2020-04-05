@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-content col-lg-6 mx-auto mt-lg-5">
+  <div class="modal-content col-lg-6 mx-auto mt-lg-5 mb-lg-5">
     <div class="modal-header info-color white-text">
       <h4 class="title">
         <font-awesome-icon icon="search-dollar" />You are looking for a donation?
@@ -14,7 +14,13 @@
           class="form-control form-control-sm"
           placeholder="Cause title..."
           v-model="title"
+          @blur="$v.title.$touch"
         />
+        <template v-if="$v.title.$error">
+          <div class="error text-danger" v-if="!$v.title.required">Title is required!</div>
+          <div class="error text-danger" v-if="!$v.title.alpha">Only alphabetical characters are allowed!</div>
+          <div class="error text-danger" v-else-if="!$v.title.minLength">Title is too short!</div>
+        </template>
         <br />
         <label for="pictureUrl">Your cause picture...</label>
         <input
@@ -23,27 +29,45 @@
           class="form-control form-control-sm"
           placeholder="https://..."
           v-model="image"
+          @blur="$v.image.$touch"
         />
+        <template v-if="$v.image.$error">
+          <div class="error text-danger" v-if="!$v.image.required">Picture URL is required!</div>
+        </template>
         <br />
         <label for="neededFunds">Your needed funds...</label>
         <input
-          type="text"
+          type="number"
           id="neededFunds"
           class="form-control form-control-sm"
-          placeholder="2400.00"
+          placeholder="1000.00"
           v-model="neededFund"
+          @blur="$v.neededFund.$touch"
         />
+        <template v-if="$v.neededFund.$error">
+          <div class="error text-danger" v-if="!$v.neededFund.required">Needed fund is required!</div>
+        </template>
         <br />
         <label for="causeDescription">Your cause description...</label>
-        <textarea
-          type="text"
+        <vue-editor
           id="causeDescription"
-          class="md-textarea form-control"
-          placeholder="I'm looking for funds because..."
           v-model="description"
-        ></textarea>
+          :placeholder="aboutPlaceholder"
+          :editorToolbar="customToolbar"
+          @blur="$v.description.$touch"
+        ></vue-editor>
+        <template v-if="$v.description.$error">
+          <div
+            class="error text-danger"
+            v-if="!$v.description.required"
+          >Description cannot be empty!</div>
+        </template>
         <div class="text-center mt-4 mb-2">
-          <button @click.prevent="sendData()" class="btn btn-info">Send</button>
+          <button
+            :disabled="$v.$invalid"
+            @click.prevent="sendData()"
+            class="btn btn-info btn-block w-20"
+          >Send</button>
         </div>
       </form>
     </div>
@@ -54,15 +78,58 @@
 import firebase from "firebase";
 import { v4 as uuidv4 } from "uuid";
 import { Cause } from "../../models/Cause";
+import { VueEditor } from "vue2-editor";
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  minLength,
+  maxLength,
+  helpers
+} from "vuelidate/lib/validators";
+const alpha = helpers.regex("alpha", /^[ a-zA-Z]*$/);
 
 export default {
   name: "app-cause-create",
+  mixins: [validationMixin],
+  validations: {
+    title: {
+      required,
+      minLength: minLength(15),
+      maxLength: maxLength(100),
+      alpha
+    },
+    description: {
+      required
+    },
+    image: {
+      required
+    },
+    neededFund: {
+      required
+    }
+  },
+  components: {
+    VueEditor
+  },
   data() {
     return {
+      aboutPlaceholder: "I'm looking for funds because...",
       title: "",
       image: "",
       description: "",
-      neededFund: 0
+      neededFund: 0,
+      customToolbar: [
+        [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+        [{ size: ["small", false, "large", "huge"] }],
+        ["bold", "italic", "underline", "strike"],
+        [
+          { align: "" },
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" }
+        ],
+        ["link"]
+      ]
     };
   },
   methods: {
@@ -83,9 +150,9 @@ export default {
         .child("causes")
         .child(id)
         .set(newCause)
-        .then((res)=>{
+        .then(res => {
           console.log(res);
-          this.$router.push("/")
+          this.$router.push({name:"causeDetail",params:{id:id}});
         });
     }
   }
