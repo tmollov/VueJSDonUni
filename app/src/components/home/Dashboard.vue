@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import AppNoCauses from "../common/NoCauses";
+import AppNoCauses from "./common/NoCauses";
 import AppCauses from "./common/Causes";
 
 export default {
