@@ -15,7 +15,6 @@
 </template>
 
 <script>
-//import { UserInfo } from "../../models/UserInfo";
 import ProfileMixin from "../../mixins/ProfileMixin";
 import MyCauses from "./My/MyCauses";
 import MyInfo from "./My/MyInfo";
