@@ -157,7 +157,7 @@ export default {
         Number(this.neededFund),
         this.$store.getters.User.email
       );
-      this.PushCause(newCause, id);
+      this.PushCause(newCause, id,false);
     }
   }
 };
