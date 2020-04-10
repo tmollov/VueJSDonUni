@@ -15,8 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import firebase from "firebase/app";
 import firebaseConfig from "./firebaseConfig";
 import Vuelidate from "vuelidate";
-
 import AppLoader from "./components/core/PureRingLoader";
+import { NamedRoutes } from "./namedRoutes";
 
 library.add(faDonate);
 library.add(faPencilAlt);
@@ -39,6 +39,7 @@ const router = new VueRouter({
 
 
 Vue.component("app-loader", AppLoader);
+Vue.prototype.$Routes = NamedRoutes;
 
 new Vue({
   render: h => h(App),
