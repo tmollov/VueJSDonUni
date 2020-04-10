@@ -3,6 +3,7 @@ import Login from "./components/auth/Login.vue";
 import Register from "./components/auth/Register.vue";
 import CauseCreate from "./components/cause/Create.vue";
 import CauseDetail from "./components/cause/Detail.vue";
+import CauseEdit from './components/cause/Edit.vue';
 import Profile from "./components/profile/Profile.vue";
 import ProfileEdit from "./components/profile/Edit.vue"
 import WelcomeNewUser from './components/profile/Welcome.vue'
@@ -68,6 +69,16 @@ export default [
     component: CauseDetail,
     beforeEnter: (to, from, next) => {
       if (to.name == "causeDetail" && to.params.id && !store.getters.User) {
+        next({ name: "login" });
+      } else next();
+    }
+  },
+  {
+    name: "causeEdit",
+    path: "/cause/edit/:id",
+    component: CauseEdit,
+    beforeEnter: (to, from, next) => {
+      if (to.name == "causeEdit" && to.params.id && !store.getters.User) {
         next({ name: "login" });
       } else next();
     }
