@@ -4,8 +4,6 @@
       <form>
         <p class="h4 py-4">Login</p>
         <hr />
-        <div class="text-danger" v-if="loginErrorMsg">{{loginErrorMsg}}</div>
-
         <!-- Email -->
         <label
           for="email"
@@ -54,7 +52,7 @@
           >Password should not raise 50 charachter long.</div>
         </template>
         <div class="text-center py-4 mt-3">
-          <button :disabled="$v.$invalid" v-if="!loading" class="btn btn-info" @click.prevent="login">Log In</button>
+          <button :disabled="$v.$invalid" v-if="!loading" class="btn btn-info w-100" @click.prevent="login">Log In</button>
           <app-loader-ring v-if="loading"></app-loader-ring>
           <p>
             Don't have an account?
