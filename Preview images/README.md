@@ -35,3 +35,6 @@
 
 ### Edir Profile - part 2
 ![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/11.profile_edit_2_edited.jpg?raw=true)
+
+### Something went wrong
+![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/12.something_went_wrong.jpg?raw=true)
