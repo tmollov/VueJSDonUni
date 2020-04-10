@@ -5,9 +5,9 @@
         <img class="col" :src="getProfileImage" />
       </div>
       <div class="col-8">
-        <h1>{{UserInfo.firstName}} {{UserInfo.lastName}}</h1>
-        <div v-html="UserInfo.about"></div>
-        <p>{{UserInfo.phone}}</p>
+        <h1>{{FirstName}} {{LastName}}</h1>
+        <div v-html="About"></div>
+        <p>{{PhoneNumber}}</p>
       </div>
       <router-link
         class="w-100 btn btn-primary my-2 editProfileLink"
@@ -27,6 +27,30 @@ export default {
         return "https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png";
       }
       return this.UserInfo.profileImage;
+    },
+    FirstName() {
+      if (this.UserInfo == null) {
+        return this.$store.getters.User.email;
+      }
+      return this.UserInfo.firstName;
+    },
+    LastName() {
+      if (this.UserInfo == null) {
+        return "";
+      }
+      return this.UserInfo.lastName;
+    },
+    About() {
+      if (this.UserInfo == null) {
+        return "";
+      }
+      return this.UserInfo.about;
+    },
+    PhoneNumber(){
+      if (this.UserInfo == null) {
+        return "";
+      }
+      return this.UserInfo.phone;
     }
   }
 };
