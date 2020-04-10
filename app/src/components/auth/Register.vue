@@ -4,6 +4,7 @@
       <form method action>
         <p class="h4 py-4">Register</p>
         <hr />
+        <div class="text-danger" v-if="loginErrorMsg">{{loginErrorMsg}}</div>
         <label for="email" class="grey-text font-weight-light font-weight-bold">Email</label>
         <input
           type="text"
@@ -66,8 +67,7 @@
             class="btn btn-info"
             @click.prevent="register"
           >Register</button>
-          <PureRingLoader v-if="loading" :width="20" :height="20" />
-          <!-- <p>Have an account? <router-link to="/login">Login</router-link></p> -->
+          <PureRingLoader v-if="loading"/>
         </div>
       </form>
     </div>
@@ -75,7 +75,6 @@
 </template>
 
 <script>
-import firebase from "firebase";
 import PureRingLoader from "../core/PureRingLoader";
 import { validationMixin } from "vuelidate";
 import {
@@ -85,13 +84,16 @@ import {
   sameAs,
   email
 } from "vuelidate/lib/validators";
+import AuthMixin from '../../mixins/AuthMixin.vue';
+let passwordMinLength = 6;
+let passwordMaxLength = 50;
 
 export default {
   name: "app-register",
   components: {
     PureRingLoader
   },
-  mixins: [validationMixin],
+  mixins: [validationMixin, AuthMixin],
   validations: {
     email: {
       required,
@@ -99,49 +101,11 @@ export default {
     },
     password: {
       required,
-      minLength: minLength(6),
-      maxLength: maxLength(50)
+      minLength: minLength(passwordMinLength),
+      maxLength: maxLength(passwordMaxLength)
     },
     cpass: {
       sameAsPassword: sameAs("password")
-    }
-  },
-  data() {
-    return {
-      email: "",
-      password: "",
-      cpass: "",
-      loading: false
-    };
-  },
-  methods: {
-    register() {
-      this.loading = true;
-      if (this.password !== this.cpass) {
-        this.errors = "Passwords doesn't match";
-        return;
-      }
-      this.errors = "";
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(
-          user => {
-            console.log(user);
-
-            this.$store.commit("changeUserState", user);
-            this.loading = false;
-            if (user.additionalUserInfo.isNewUser) {
-              this.$router.push({ name: "welcome" });
-              return;
-            }
-            this.$router.push({ name: "home" });
-          },
-          err => {
-            alert("Oops. " + err.message);
-            this.loading = false;
-          }
-        );
     }
   },
   computed: {
@@ -149,11 +113,6 @@ export default {
       return (
         this.$v.cpass.$error && this.$v.password.$error && this.$v.email.$error
       );
-    }
-  },
-  created() {
-    if (this.$store.getters.User) {
-      this.$router.push("/");
     }
   }
 };

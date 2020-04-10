@@ -4,7 +4,9 @@
       <form>
         <p class="h4 py-4">Login</p>
         <hr />
-        <div v-if="loginErrorMsg">{{loginErrorMsg}}</div>
+        <div class="text-danger" v-if="loginErrorMsg">{{loginErrorMsg}}</div>
+
+        <!-- Email -->
         <label
           for="email"
           class="grey-text font-weight-light w-100 text-left font-weight-bold"
@@ -24,13 +26,14 @@
         </template>
         <br />
 
+        <!-- Password -->
         <label
           for="password"
           class="grey-text font-weight-light w-100 text-left font-weight-bold"
         >Password</label>
         <input
           id="password"
-          :type="typePass"
+          type="password"
           class="form-control"
           :class="{redBorder:$v.password.$error}"
           v-model.trim="password"
@@ -52,7 +55,7 @@
         </template>
         <div class="text-center py-4 mt-3">
           <button :disabled="$v.$invalid" v-if="!loading" class="btn btn-info" @click.prevent="login">Log In</button>
-          <app-loader-ring v-if="loading" :width="20" :height="20"></app-loader-ring>
+          <app-loader-ring v-if="loading"></app-loader-ring>
           <p>
             Don't have an account?
             <router-link to="/register">Register now!</router-link>
@@ -64,7 +67,6 @@
 </template>
 
 <script>
-import firebase from "firebase";
 import AppLoaderRing from "../core/PureRingLoader";
 import { validationMixin } from "vuelidate";
 import {
@@ -73,10 +75,14 @@ import {
   maxLength,
   email
 } from "vuelidate/lib/validators";
+import AuthMixin from '../../mixins/AuthMixin.vue';
+let passwordMinLength = 6;
+let passwordMaxLength = 50;
+
 
 export default {
   name: "app-login",
-  mixins: [validationMixin],
+  mixins: [validationMixin, AuthMixin],
   validations: {
     email: {
       required,
@@ -84,46 +90,13 @@ export default {
     },
     password: {
       required,
-      minLength: minLength(6),
-      maxLength: maxLength(50)
+      minLength: minLength(passwordMinLength),
+      maxLength: maxLength(passwordMaxLength)
     }
   },
   components: {
     AppLoaderRing
   },
-  data() {
-    return {
-      email: "",
-      password: "",
-      loading: false,
-      loginErrorMsg: "",
-      typePass: "password"
-    };
-  },
-  methods: {
-    login() {
-      this.loading = true;
-
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then((res) => {
-          this.$store.commit("changeUserState", res.user);
-          this.loading = false;
-          this.$router.push({name:'home'});
-        })
-        .catch(err => {
-          console.log(err);
-          this.loginErrorMsg = err.message;
-          this.loading = false;
-        });
-    }
-  },
-  created() {
-    if (this.$store.getters.User) {
-      this.$router.push({name:'home'});
-    }
-  }
 };
 </script>
 
