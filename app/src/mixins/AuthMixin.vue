@@ -51,6 +51,21 @@ export default {
             this.loading = false;
           }
         );
+    },
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$store.commit("changeUserState", null);
+          this.$store.commit("changeUserInfoState", null);
+          if (this.$router.currentRoute.name !== "home") {
+            this.$router.push({ name: "home" });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };

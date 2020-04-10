@@ -28,7 +28,7 @@
             <router-link class="nav-link" to="/profile">Profile</router-link>
           </li>
           <li v-if="$store.getters.User" class="nav-item">
-            <a class="nav-link" href="/logout" @click.prevent="logout()">Logout</a>
+            <a class="nav-link" href="#logout" @click.prevent="logout()">Logout</a>
           </li>
           <li v-if="!$store.getters.User" class="nav-item">
             <router-link class="nav-link" to="login">Login</router-link>
@@ -40,28 +40,10 @@
 </template>
 
 <script>
-import firebase from "firebase";
-
+import AuthMixin from '../../mixins/AuthMixin.vue';
 export default {
   name: "app-navigation",
-  methods: {
-    logout() {
-      firebase
-        .auth()
-        .signOut()
-        .then(res => {
-          this.$store.commit("changeUserState", null);
-          this.$store.commit("changeUserInfoState", null);
-          if (this.$router.currentRoute.name !== "home") {
-            this.$router.push({ name: "home" });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  },
-  computed: {}
+  mixins:[AuthMixin]
 };
 </script>
 
