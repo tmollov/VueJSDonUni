@@ -1,120 +1,123 @@
 <template>
   <div>
-    <transition name="fadeOut">
-      <app-loader v-if="loading" class="loadingRing"></app-loader>
-    </transition>
+    <ConfirmDelete :isClicked="IsCloseClicked" v-on:confirm="DeleteCause" v-on:toggleClicked="toggleClose" />
 
-    <transition name="fadeIn">
-      <div v-if="!loading" class="container detailDiv mb-5">
-        <div class="row">
-          <div class="modal-content col-lg-12">
-            <!-- <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-          <h4 class="modal-title" id="myModalLabel">Make a donation</h4>
-            </div>-->
-            <div class="modal-body">
-              <center>
-                <img
-                  style="border-radius: 5px;"
-                  :src="getImage"
-                  name="aboutme"
-                  width="500"
-                  height="auto"
-                  border="0"
-                  class="img-circle"
-                />
-                <h3 class="media-heading">{{cause.title}}</h3>
-                <span>Collected</span>
-                <strong class="label text-success">{{cause.neededFund}}</strong>
-                <span>from</span>
-                <strong class="label text-info">{{cause.collectedFund}}</strong>
-              </center>
-              <hr />
-              <center>
-                <p style="word-wrap: break-word;" class="text-left">
-                  <strong>Description:</strong>
-                  <br />
-                  {{cause.description}}
-                </p>
-                <br />
-                <p style="word-wrap: break-word;" class="text-left">
-                  <strong>Donors:</strong>
-                  <br />
-                  <span>Donor 1</span>
-                  <span>Donor 2</span>
-                  <span>Donor 3</span>
-                  <span>Donor 4</span>
-                </p>
-              </center>
-            </div>
-            <div class="modal-footer">
-              <a
-                v-if="$store.getters.User"
-                href="#deletecause"
-                class="btn btn-danger"
-                @click="deleteCause()"
-              >Close the cause</a>
-              <form v-if="!$store.getters.User">
-                <label for="currentDonation" class="grey-text font-weight-light">My donation:</label>
-                <input id="currentDonation" type="number" min="1" class="form-control" />
-                <button class="btn btn-success w-100" type="submit">Make the donation</button>
-              </form>
+    <template v-if="!IsCloseClicked">
+      <app-loader v-if="IsPageLoading" class="loadingRing"></app-loader>
+
+      <transition name="fadeIn">
+        <div v-if="!IsPageLoading" class="container detailDiv mb-5">
+          <div class="row">
+            <div class="modal-content col-lg-8 mx-auto">
+              <div class="modal-body">
+                <center>
+                  <img
+                    style="border-radius: 5px;"
+                    :src="cause.image"
+                    name="aboutme"
+                    width="500"
+                    height="auto"
+                    border="0"
+                    class="img-circle"
+                  />
+                  <h3 class="media-heading">{{cause.title}}</h3>
+                </center>
+                <hr />
+                <div>
+                  <div style="word-wrap: break-word;">
+                    <div class="ql-editor" v-html="cause.description"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row w-100 mx-auto">
+                <div class="col-8">
+                  <span>Collected </span>
+                  <strong class="label">
+                    <span class="text-success">{{collFund}}</span>
+                    <span> of </span>
+                    <span class="text-danger">{{cause.neededFund}} $</span>
+                  </strong>
+                </div>
+                <div class="col-4">
+                  <p style="word-wrap: break-word;">
+                    <strong>{{donorsCount}} Donors</strong>
+                    <br />
+                  </p>
+                </div>
+              </div>
+              <div class="modal-footer" v-if="$store.getters.User">
+                <div v-if="$store.getters.User.email == cause.creatorEmail" class="row w-100">
+                  <router-link class="btn btn-primary col-5" :to="{name:'causeEdit'}">Edit</router-link>
+                  <span class="col"></span>
+                  <a
+                    href="#deletecause"
+                    class="btn btn-danger col-5"
+                    @click="toggleClose()"
+                  >Close the cause</a>
+                </div>
+
+                <form v-if="$store.getters.User.email != cause.creatorEmail">
+                  <p class="grey-text font-weight-light">Donate:</p>
+                  <input
+                    id="currentDonation"
+                    type="number"
+                    min="1"
+                    class="form-control my-2"
+                    v-model="myDonation"
+                    :class="{'border-danger': isDonationWrong}"
+                  />
+                  <p v-if="isDonationWrong" class="text-danger">Minimum donation is 1$</p>
+                  <button
+                    :disabled="isDonationWrong"
+                    class="btn btn-success w-100"
+                    @click.prevent="DonateCause()"
+                  >Make the donation</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </template>
   </div>
 </template>
 
 <script>
-import firebase from "firebase";
+import AppLoader from "../core/PureRingLoader";
+import ConfirmDelete from "./Detail/ConfirmDelete";
+import CauseMixin from "../../mixins/CauseMixin";
 
 export default {
   name: "app-cause-detail",
+  mixins: [CauseMixin],
+  components: { AppLoader, ConfirmDelete },
   data() {
     return {
-      cause: {},
-      loading: true
+      isDonationWrong: false,
+      IsCloseClicked: false
     };
   },
   computed: {
-    getNeeded() {
-      return `$${this.cause?.neededFund.toFixed(2)}`;
+    donorsCount() {
+      if (this.cause.donors == undefined) {
+        return 0;
+      }
+      return Object.keys(this.cause.donors).length;
     },
-    getCollected() {
-      return `$${this.cause?.collectedFund.toFixed(2)}`;
-    },
-    getImage() {
-      return this.cause?.image;
+    collFund(){
+      if (this.cause.donors == undefined) {
+        return 0;
+      }
+      return Object.values(this.cause.donors).reduce((a,b)=> a+b);
     }
   },
-  methods:{
-    deleteCause(){
-      firebase
-      .database()
-      .ref()
-      .child("causes")
-      .child(this.$route.params.id)
-      .remove()
-      .then((res) => {
-        console.log(res);
-        this.$router.push({name:"home"});
-      });
+  methods: {
+    toggleClose() {
+      this.IsCloseClicked = !this.IsCloseClicked;
     }
   },
-  mounted() {
-    firebase
-      .database()
-      .ref()
-      .child("causes")
-      .child(this.$route.params.id)
-      .once("value")
-      .then((snapshot) => {
-        this.cause = snapshot.val();
-        console.log(snapshot.val());
-        this.loading = false;
-      });
+  created() {
+    this.LoadCause();
   }
 };
 </script>
@@ -123,30 +126,6 @@ export default {
 .detailDiv {
   margin-bottom: 2%;
   margin-top: 5%;
-}
-
-.loadingRing {
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.fadeIn-enter-active,
-.fadeIn-leave-active {
-  transition: opacity 0.5s;
-}
-.fadeIn-enter, .fadeIn-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
-.fadeOut-enter-active,
-.fadeOut-leave-active {
-  transition: opacity 0.5s;
-}
-.fadeOut-leave, .fadeOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+  z-index: 0;
 }
 </style>
