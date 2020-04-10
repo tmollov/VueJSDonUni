@@ -15,11 +15,11 @@
 ### Create Cause
 ![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/04.cause_create.jpg?raw=true)
 
-### Cause Detail
-![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/05.cause_detail.jpg?raw=true)
-
 ### Edit Cause
 ![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/06.cause_edit.jpg?raw=true)
+
+### Cause Detail
+![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/05.cause_detail.jpg?raw=true)
 
 ### Cause Detail - Closing the cause
 ![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/07.cause_detail_close_cause.jpg?raw=true)
