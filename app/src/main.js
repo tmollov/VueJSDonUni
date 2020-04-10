@@ -8,7 +8,8 @@ import {
   faDonate,
   faPencilAlt,
   faSearchDollar,
-  faBriefcase
+  faBriefcase,
+  faExclamationTriangle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import firebase from "firebase/app";
@@ -21,6 +22,7 @@ library.add(faDonate);
 library.add(faPencilAlt);
 library.add(faSearchDollar);
 library.add(faBriefcase);
+library.add(faExclamationTriangle)
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
