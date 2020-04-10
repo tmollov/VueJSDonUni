@@ -18,17 +18,21 @@ import Vuelidate from "vuelidate";
 import AppLoader from "./components/core/PureRingLoader";
 import { NamedRoutes } from "./namedRoutes";
 
+import VueToast from "../node_modules/vue-toast-notification/dist/index";
+import "vue-toast-notification/dist/theme-default.css";
+
 library.add(faDonate);
 library.add(faPencilAlt);
 library.add(faSearchDollar);
 library.add(faBriefcase);
-library.add(faExclamationTriangle)
+library.add(faExclamationTriangle);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
 
 Vue.use(VueRouter);
 Vue.use(Vuelidate);
+Vue.use(VueToast, { position: "top" });
 
 firebase.initializeApp(firebaseConfig);
 
@@ -36,7 +40,6 @@ const router = new VueRouter({
   mode: "history",
   routes
 });
-
 
 Vue.component("app-loader", AppLoader);
 Vue.prototype.$Routes = NamedRoutes;
@@ -47,4 +50,3 @@ new Vue({
   store,
   firebase
 }).$mount("#app");
-
