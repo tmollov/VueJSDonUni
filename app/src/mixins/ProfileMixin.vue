@@ -1,7 +1,9 @@
 <script>
 import firebase from "firebase";
+import ToasterConfigMixin from "./ToasterConfigMixin.vue";
 
 export default {
+  mixins: [ToasterConfigMixin],
   data() {
     return {
       IsPageLoading: true,
@@ -20,6 +22,9 @@ export default {
         .then(response => {
           this.$store.commit("changeUserInfoState", response.val());
           this.IsPageLoading = false;
+        })
+        .catch(err => {
+          this.toastError(err.message);
         });
     },
     LoadUserCauses() {
@@ -37,6 +42,9 @@ export default {
             }
           }
           this.myCauses = causes;
+        })
+        .catch(err => {
+          this.toastError(err.message);
         });
     },
     EditUserInfo(NewUserInfoObj) {
@@ -47,7 +55,11 @@ export default {
         .child(this.$store.getters.User.uid)
         .set(NewUserInfoObj)
         .then(() => {
+          this.toastInfo("Profile saved!");
           this.$router.push({ name: "profile" });
+        })
+        .catch(err=>{
+          this.toastError(err.message);
         });
     }
   }

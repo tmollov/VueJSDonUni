@@ -1,5 +1,6 @@
 <script>
 import firebase from "firebase"
+
 export default {
   data() {
     return {
@@ -19,7 +20,7 @@ export default {
             return;
           }
           this.causes = response.val();
-        });
+        })
     }
   }
 };

@@ -1,13 +1,15 @@
 <script>
-import firebase from "firebase"
+import firebase from "firebase";
+import ToasterConfigMixin from "./ToasterConfigMixin";
+
 export default {
+  mixins: [ToasterConfigMixin],
   data() {
     return {
       email: "",
       password: "",
       cpass: "",
-      loading: false,
-      loginErrorMsg:''
+      loading: false
     };
   },
   methods: {
@@ -17,38 +19,34 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then(res => {
-          this.$store.commit("changeUserState", res.user);
-          this.loading = false;
-          this.$router.push(this.$Routes.Home);
-        })
-        .catch(err => {
-          console.log(err);
-          this.loginErrorMsg = err.message;
-          this.loading = false;
-        });
+        .then(
+          res => {
+            this.toastSuccess("Login successful!");
+            this.$store.commit("changeUserState", res.user);
+            this.loading = false;
+            this.$router.push(this.$Routes.Home);
+          },
+          err => {                        
+            this.toastError(err.message);
+            this.loading = false;
+          }
+        )
     },
     register() {
       this.loading = true;
-      if (this.password !== this.cpass) {
-        this.errors = "Passwords doesn't match";
-        return;
-      }
-      this.errors = "";
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(
           user => {
-            console.log(user);
-
+            this.toastSuccess("Register successful!");
             this.$store.commit("changeUserState", user);
             this.loading = false;
             this.$router.push(this.$Routes.Home);
           },
           err => {
-            this.loginErrorMsg = err.message;
             this.loading = false;
+            this.toastError(err.message);
           }
         );
     },
@@ -60,11 +58,13 @@ export default {
           this.$store.commit("changeUserState", null);
           this.$store.commit("changeUserInfoState", null);
           if (this.$router.currentRoute.name !== "home") {
-            this.$router.push({ name: "home" });
+            this.$router.push(this.$Routes.Home);
           }
+
+          this.toastInfo("Logged out!");
         })
         .catch(err => {
-          console.log(err);
+          this.toastError(err.message);
         });
     }
   }

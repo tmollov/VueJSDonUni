@@ -1,7 +1,9 @@
 <script>
 import firebase from "firebase";
+import ToasterConfigMixin from "./ToasterConfigMixin.vue";
 
 export default {
+  mixins: [ToasterConfigMixin],
   data() {
     return {
       IsDeleteConfirmed: false,
@@ -13,16 +15,26 @@ export default {
     };
   },
   methods: {
-    PushCause(NewCause, id) {
+    PushCause(NewCause, id,isUpdate) {
       firebase
         .database()
         .ref()
         .child("causes")
         .child(id)
         .set(NewCause)
-        .then(() => {
-          this.$router.push({ name: "causeDetail", params: { id: id } });
-        });
+        .then(
+          res => {
+            this.$router.push({ name: "causeDetail", params: { id: id } });
+            if (isUpdate) {
+              this.toastInfo("Cause updated!");
+              return;
+            }
+            this.toastInfo("Cause created!");
+          },
+          err => {
+            this.toastError(err.message);
+          }
+        );
     },
     GetCause() {
       return firebase
@@ -33,10 +45,21 @@ export default {
         .once("value");
     },
     LoadCause() {
-      this.GetCause(this.$route.params.id).then(res => {
-        this.cause = res.val();
-        this.IsPageLoading = false;
-      });
+      this.GetCause(this.$route.params.id)
+        .then(
+          res => {
+            this.cause = res.val();
+            this.IsPageLoading = false;
+          },
+          err => {
+            console.log(err);
+
+            this.toastError(err.message);
+          }
+        )
+        .catch(err => {
+          console.log(err);
+        });
     },
     DeleteCause() {
       this.IsDeleteConfirmed = true;
@@ -46,10 +69,16 @@ export default {
         .child("causes")
         .child(this.$route.params.id)
         .remove()
-        .then(() => {
-          this.IsDeleteConfirmed = false;
-          this.$router.push({ name: "home" });
-        });
+        .then(
+          res => {
+            this.IsDeleteConfirmed = false;
+            this.$router.push({ name: "home" });
+            this.toastWarn("Cause deleted!");
+          },
+          err => {
+            this.toastError(err.message);
+          }
+        );
     },
     DonateCause() {
       this.IsPageLoading = true;
@@ -57,16 +86,18 @@ export default {
         this.cause.donors = {};
       }
       if (this.cause.donors[this.$store.getters.User.uid]) {
-        debugger
         this.cause.donors[this.$store.getters.User.uid] =
           Number(this.cause.donors[this.$store.getters.User.uid]) +
           Number(this.myDonation);
       } else {
-        this.cause.donors[this.$store.getters.User.uid] =  Number(this.myDonation);
+        this.cause.donors[this.$store.getters.User.uid] = Number(
+          this.myDonation
+        );
       }
 
       this.cause.collectedFund =
         Number(this.cause.collectedFund) + Number(this.myDonation);
+      let currDonation = this.myDonation;
       this.myDonation = 1;
       firebase
         .database()
@@ -74,9 +105,15 @@ export default {
         .child("causes")
         .child(this.$route.params.id)
         .set(this.cause)
-        .then(() => {
-          this.IsPageLoading = false;
-        });
+        .then(
+          res => {
+            this.IsPageLoading = false;
+            this.toastSuccess(`You donated ${currDonation} $`);
+          },
+          err => {
+            this.toastError(err.message);
+          }
+        );
     }
   }
 };
