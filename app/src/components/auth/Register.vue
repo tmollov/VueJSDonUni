@@ -4,7 +4,6 @@
       <form method action>
         <p class="h4 py-4">Register</p>
         <hr />
-        <div class="text-danger" v-if="loginErrorMsg">{{loginErrorMsg}}</div>
         <label for="email" class="grey-text font-weight-light font-weight-bold">Email</label>
         <input
           type="text"
@@ -64,7 +63,7 @@
           <button
             v-if="!loading"
             :disabled="$v.$invalid"
-            class="btn btn-info"
+            class="btn btn-info w-100"
             @click.prevent="register"
           >Register</button>
           <PureRingLoader v-if="loading"/>
