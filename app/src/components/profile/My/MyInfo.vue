@@ -6,7 +6,7 @@
       </div>
       <div class="col-8">
         <h1>{{UserInfo.firstName}} {{UserInfo.lastName}}</h1>
-        <div class="ql-editor" v-html="UserInfo.about"></div>
+        <div v-html="UserInfo.about"></div>
         <p>{{UserInfo.phone}}</p>
       </div>
       <router-link
