@@ -1,19 +1,17 @@
 <template>
-  <div class="lds-ring" :style="{width:width,height:height}">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+  <transition name="fadeOut">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </transition>
 </template>
 
 <script>
 export default {
   name: "app-loader-ring",
-  props:{
-      width:Number,
-      height:Number
-  },
 };
 </script>
 
