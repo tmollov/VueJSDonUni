@@ -36,8 +36,8 @@
           <div class="error text-danger" v-if="!$v.image.required">Picture URL is required!</div>
         </template>
         <div class="text-center">
-            <p>Image preview:</p>
-            <img :src="image">
+          <p>Image preview:</p>
+          <img :src="image" />
         </div>
         <br />
         <label for="neededFunds">Your needed funds...</label>
@@ -152,7 +152,7 @@ export default {
         Number(this.neededFund),
         this.$store.getters.User.email
       );
-      this.PushCause(newCause, this.$route.params.id);
+      this.PushCause(newCause, this.$route.params.id, true);
     }
   },
   mounted() {
