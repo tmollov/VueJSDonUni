@@ -18,9 +18,6 @@ export default {
         .child(userId)
         .once("value")
         .then(response => {
-          if (response == null) {
-            this.$router.push({ name: "welcome" });
-          }
           this.$store.commit("changeUserInfoState", response.val());
           this.IsPageLoading = false;
         });
