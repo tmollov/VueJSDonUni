@@ -1,108 +1,92 @@
 <template>
   <div>
-    <transition name="fadeOut">
-      <app-loader v-if="isLoading" class="loadingRing"></app-loader>
-    </transition>
-    <transition name="fadeIn">
-      <div v-if="!isLoading" class="modal-content col-lg-6 mx-auto mt-5 mb-5">
-        <div class="card-body">
-          <form>
-            <p class="h2 py-4 text-center">Edit</p>
-
-            <!-- Names -->
-            <div class="row">
-              <div class="col">
-                <label for="fName" class="grey-text font-weight-light text-left font-weight-bold">
-                  <span>First Name</span>
-                </label>
-                <input
-                  id="fName"
-                  type="text"
-                  class="form-control"
-                  placeholder="Your first name here..."
-                  v-model="firstName"
-                  @blur="$v.firstName.$touch"
-                />
-                <div class="error text-danger" v-if="!$v.firstName.alpha">Only alphabet is allowed.</div>
-                <br />
-              </div>
-              <div class="col">
-                <label for="lName" class="grey-text font-weight-light text-left font-weight-bold">
-                  <span>Last Name</span>
-                </label>
-                <input
-                  id="lName"
-                  type="text"
-                  class="form-control"
-                  placeholder="Your last name here..."
-                  v-model="lastName"
-                  @blur="$v.lastName.$touch"
-                />
-                <div class="error text-danger" v-if="!$v.lastName.alpha">Only alphabet is allowed.</div>
-                <br />
-              </div>
-            </div>
-
-            <!-- Photo -->
-            <div class="row">
-              <label for="pictureUrl" class="font-weight-bold">Image URL</label>
+    <div class="modal-content col-lg-6 mx-auto mt-5 mb-5">
+      <div class="card-body">
+        <form>
+          <p class="h2 py-4 text-center">Edit</p>
+          <!-- Names -->
+          <div class="row">
+            <div class="col">
+              <label for="fName" class="grey-text font-weight-light text-left font-weight-bold">
+                <span>First Name</span>
+              </label>
               <input
+                id="fName"
                 type="text"
-                id="pictureUrl"
-                class="form-control form-control-sm"
-                placeholder="https://..."
-                v-model="profileImage"
+                class="form-control"
+                placeholder="Your first name here..."
+                v-model="firstName"
+                @blur="$v.firstName.$touch"
               />
-              <div class="mx-auto">
-                <p class="text-center p-0 m-0">Image preview:</p>​
-                <img :src="profileImage" class="d-block" alt="No image!" />
-              </div>
-            </div>
-
-            <hr>
-            <!-- About -->
-            <div>
-              <label
-                for="about"
-                class="grey-text font-weight-light w-100 text-left font-weight-bold"
-              >
-                <span>More about you</span>
-              </label>
-              <vue-editor id="about" v-model="about" :editorToolbar="customToolbar"></vue-editor>
+              <div class="error text-danger" v-if="!$v.firstName.alpha">Only alphabet is allowed.</div>
               <br />
             </div>
-
-            <!-- Phone number -->
-            <div>
-              <label
-                for="phone"
-                class="grey-text font-weight-light w-100 text-left font-weight-bold"
-              >
-                <span>Your phone number</span>
+            <div class="col">
+              <label for="lName" class="grey-text font-weight-light text-left font-weight-bold">
+                <span>Last Name</span>
               </label>
-              <VuePhoneNumberInput
-                default-country-code="BG"
-                name="phone"
-                v-model="phoneNumber"
-                @update="updateData"
+              <input
+                id="lName"
+                type="text"
+                class="form-control"
+                placeholder="Your last name here..."
+                v-model="lastName"
+                @blur="$v.lastName.$touch"
               />
+              <div class="error text-danger" v-if="!$v.lastName.alpha">Only alphabet is allowed.</div>
               <br />
             </div>
-
-            <div class="row">
-              <button @click.prevent="uploadData()" class="btn btn-info mx-auto col-6">Save</button>
+          </div>
+          <!-- Photo -->
+          <div class="row">
+            <label for="pictureUrl" class="font-weight-bold">Image URL</label>
+            <input
+              type="text"
+              id="pictureUrl"
+              class="form-control form-control-sm"
+              placeholder="https://..."
+              v-model="profileImage"
+            />
+            <div class="mx-auto">
+              <p class="text-center p-0 m-0">Image preview:</p>​
+              <img :src="profileImage" class="d-block" alt="No image!" />
             </div>
-          </form>
-        </div>
+          </div>
+          <hr />
+          <!-- About -->
+          <div>
+            <label for="about" class="grey-text font-weight-light w-100 text-left font-weight-bold">
+              <span>More about you</span>
+            </label>
+            <vue-editor id="about" v-model="about" :editorToolbar="customToolbar"></vue-editor>
+            <br />
+          </div>
+          <!-- Phone number -->
+          <div>
+            <label for="phone" class="grey-text font-weight-light w-100 text-left font-weight-bold">
+              <span>Your phone number</span>
+            </label>
+            <VuePhoneNumberInput
+              default-country-code="BG"
+              name="phone"
+              v-model="phoneNumber"
+              @update="updateData"
+            />
+            <br />
+          </div>
+          <div class="row">
+            <button @click.prevent="uploadData()" class="btn btn-info mx-auto col-6">Save</button>
+          </div>
+        </form>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 
 <script>
-import firebase from "firebase";
 import AppLoader from "../core/PureRingLoader";
 import { validationMixin } from "vuelidate";
+import ProfileMixin from "../../mixins/ProfileMixin";
 import { helpers } from "vuelidate/lib/validators";
 import { VueEditor } from "vue2-editor";
 import VuePhoneNumberInput from "vue-phone-number-input";
@@ -112,7 +96,7 @@ import { UserInfo } from "../../models/UserInfo";
 const alpha = helpers.regex("alpha", /^[ a-zA-Z]*$/);
 export default {
   name: "app-welcome",
-  mixins: [validationMixin],
+  mixins: [validationMixin, ProfileMixin],
   validations: {
     firstName: {
       alpha
@@ -128,7 +112,6 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
       uInfo: null,
       firstName: "",
       lastName: "",
@@ -165,68 +148,27 @@ export default {
         this.about,
         this.$store.getters.User.email
       );
-
-      firebase
-        .database()
-        .ref()
-        .child("UserInfos")
-        .child(this.$store.getters.User.uid)
-        .set(newData)
-        .then(res => {
-          this.$router.push({name:"profile"})
-        });
-    },
+      this.EditUserInfo(newData);
+    }
   },
   created() {
-    firebase
-      .database()
-      .ref()
-      .child("UserInfos")
-      .child(this.$store.getters.User.uid)
-      .once("value")
-      .then(snapshot => {
-        console.log(snapshot.val());
-        this.uInfo = snapshot.val();
-        this.isLoading = false;
-        let u = this.uInfo;
-        this.firstName = u.firstName;
-        this.lastName = u.lastName;
-        this.about = u.about;
-        this.profileImage = u.profileImage;
-        u = u.phone.split(" ");
-        u.shift();
-        u = u.join("");
-        this.phoneNumber = u;
-      });
+    this.uInfo = this.$store.getters.UserInfo;
+    this.isLoading = false;
+    let u = this.uInfo;
+    this.firstName = u.firstName;
+    this.lastName = u.lastName;
+    this.about = u.about;
+    this.profileImage = u.profileImage;
+    u = u.phone.split(" ");
+    u.shift();
+    u = u.join("");
+    this.phoneNumber = u;
   }
 };
 </script>
 
 <style scoped>
 img {
-    max-width: 300px;
-}
-.loadingRing {
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.fadeIn-enter-active,
-.fadeIn-leave-active {
-  transition: opacity 0.5s;
-}
-.fadeIn-enter, .fadeIn-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
-.fadeOut-enter-active,
-.fadeOut-leave-active {
-  transition: opacity 0.5s;
-}
-.fadeOut-leave, .fadeOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+  max-width: 300px;
 }
 </style>
