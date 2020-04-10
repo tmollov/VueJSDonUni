@@ -84,7 +84,6 @@
 </template>
 
 <script>
-import AppLoader from "../core/PureRingLoader";
 import { validationMixin } from "vuelidate";
 import ProfileMixin from "../../mixins/ProfileMixin";
 import { helpers } from "vuelidate/lib/validators";
@@ -107,8 +106,7 @@ export default {
   },
   components: {
     VuePhoneNumberInput,
-    VueEditor,
-    AppLoader
+    VueEditor
   },
   data() {
     return {
