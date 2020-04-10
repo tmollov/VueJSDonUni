@@ -18,7 +18,10 @@
         />
         <template v-if="$v.title.$error">
           <div class="error text-danger" v-if="!$v.title.required">Title is required!</div>
-          <div class="error text-danger" v-if="!$v.title.alpha">Only alphabetical characters are allowed!</div>
+          <div
+            class="error text-danger"
+            v-if="!$v.title.alpha"
+          >Only alphabetical characters are allowed!</div>
           <div class="error text-danger" v-else-if="!$v.title.minLength">Title is too short!</div>
         </template>
         <br />
@@ -34,18 +37,23 @@
         <template v-if="$v.image.$error">
           <div class="error text-danger" v-if="!$v.image.required">Picture URL is required!</div>
         </template>
+        <div class="text-center">
+          <p>Image preview:</p>
+          <img :src="image" />
+        </div>
         <br />
         <label for="neededFunds">Your needed funds...</label>
         <input
           type="number"
+          min="1"
           id="neededFunds"
           class="form-control form-control-sm"
-          placeholder="1000.00"
           v-model="neededFund"
           @blur="$v.neededFund.$touch"
         />
         <template v-if="$v.neededFund.$error">
           <div class="error text-danger" v-if="!$v.neededFund.required">Needed fund is required!</div>
+          <div class="error text-danger" v-if="!$v.neededFund.minValue">Minimum fund is 1$</div>
         </template>
         <br />
         <label for="causeDescription">Your cause description...</label>
@@ -61,13 +69,17 @@
             class="error text-danger"
             v-if="!$v.description.required"
           >Description cannot be empty!</div>
+          <div
+            class="error text-danger"
+            v-if="!$v.description.minLength"
+          >Description must be at least 10 charachters!</div>
         </template>
         <div class="text-center mt-4 mb-2">
           <button
             :disabled="$v.$invalid"
             @click.prevent="sendData()"
             class="btn btn-info btn-block w-20"
-          >Send</button>
+          >Create</button>
         </div>
       </form>
     </div>
@@ -80,17 +92,19 @@ import { v4 as uuidv4 } from "uuid";
 import { Cause } from "../../models/Cause";
 import { VueEditor } from "vue2-editor";
 import { validationMixin } from "vuelidate";
+import CauseMixin from "../../mixins/CauseMixin";
 import {
   required,
   minLength,
   maxLength,
-  helpers
+  helpers,
+  minValue
 } from "vuelidate/lib/validators";
 const alpha = helpers.regex("alpha", /^[ a-zA-Z]*$/);
 
 export default {
   name: "app-cause-create",
-  mixins: [validationMixin],
+  mixins: [validationMixin, CauseMixin],
   validations: {
     title: {
       required,
@@ -105,7 +119,8 @@ export default {
       required
     },
     neededFund: {
-      required
+      required,
+      minValue: minValue(1)
     }
   },
   components: {
@@ -117,7 +132,7 @@ export default {
       title: "",
       image: "",
       description: "",
-      neededFund: 0,
+      neededFund: "",
       customToolbar: [
         [{ header: [false, 1, 2, 3, 4, 5, 6] }],
         [{ size: ["small", false, "large", "huge"] }],
@@ -139,21 +154,10 @@ export default {
         this.title,
         this.description,
         this.image,
-        this.neededFund,
+        Number(this.neededFund),
         this.$store.getters.User.email
       );
-      console.log(newCause);
-
-      firebase
-        .database()
-        .ref()
-        .child("causes")
-        .child(id)
-        .set(newCause)
-        .then(res => {
-          console.log(res);
-          this.$router.push({name:"causeDetail",params:{id:id}});
-        });
+      this.PushCause(newCause, id);
     }
   }
 };
@@ -169,5 +173,9 @@ export default {
 textarea {
   resize: none;
   height: 150px;
+}
+
+img {
+  max-width: 300px;
 }
 </style>
