@@ -4,7 +4,7 @@
 
     <transition name="fadeIn">
       <div class="row causeDiv" v-if="!isLoading">
-        <div class="mx-auto">
+        <div class="mx-auto w-100">
           <app-no-causes v-if="noCauses"></app-no-causes>
 
           <template v-else>

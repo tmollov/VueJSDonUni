@@ -6,7 +6,7 @@
       :key="index"
     >
       <div class="imageDiv mx-auto m-2">
-        <img :src="cause.image" alt="Image">
+        <img :src="cause.image" alt="Image" />
       </div>
       <div class="card-body d-flex flex-column">
         <h3 class="card-title text-center">{{cause.title}}</h3>
@@ -24,7 +24,7 @@ export default {
   name: "app-common-cause",
   props: {
     causes: Object
-  },
+  }
 };
 </script>
 
@@ -39,8 +39,8 @@ export default {
 
 .imageDiv img {
   display: block;
-  max-width:400px;
-  height:200px;
+  max-width: 400px;
+  height: 200px;
   width: auto;
 }
 </style>
