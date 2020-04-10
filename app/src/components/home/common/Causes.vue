@@ -41,8 +41,7 @@ export default {
 .imageDiv img {
   display: block;
   max-width:400px;
-  max-height:200px;
+  height:200px;
   width: auto;
-  height: auto;
 }
 </style>
