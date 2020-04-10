@@ -7,7 +7,7 @@
       <div class="col-lg-12 supportDiv">
         <h1 class="font-weight-light">Does your business need support?</h1>
         <p>
-          <router-link class="badge badge-primary" to="/register">Register now</router-link> to create your cause and seek for donors!
+          <router-link class="badge badge-primary" :to="{name:'register'}">Register now</router-link> to create your cause and seek for donors!
         </p>
       </div>
     </div>

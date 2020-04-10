@@ -8,11 +8,11 @@
 <script>
 import AppHomeGuest from "./Guest";
 import AppHomeDashboard from "./Dashboard";
-
-import firebase from "firebase";
+import HomeMixin from '../../mixins/HomeMixin.vue';
 
 export default {
   name: "app-home",
+  mixins:[HomeMixin],
   components: {
     AppHomeGuest,
     AppHomeDashboard
@@ -25,24 +25,8 @@ export default {
       return this.causes;
     }
   },
-  data() {
-    return {
-      causes: null
-    };
-  },
   created() {
-    firebase
-      .database()
-      .ref()
-      .once("value")
-      .then((snapshot) => {
-        if (snapshot.val() == null) {
-           this.causes = [];
-           return;
-        }
-        
-        this.causes = snapshot.val().causes;
-      });
+    this.LoadCauses();
   }
 };
 </script>

@@ -1,13 +1,11 @@
 <template>
   <div class="container dashboardDiv">
-    <transition name="fadeOut">
-      <app-loader v-if="isLoading" class="loadingRing"></app-loader>
-    </transition>
+    <app-loader v-if="isLoading" class="loadingRing"></app-loader>
 
     <transition name="fadeIn">
       <div class="row causeDiv" v-if="!isLoading">
         <div class="mx-auto">
-          <app-no-causes v-if="causes.length == 0"></app-no-causes>
+          <app-no-causes v-if="noCauses"></app-no-causes>
 
           <template v-else>
             <AppCauses :causes="causes"></AppCauses>
@@ -38,6 +36,9 @@ export default {
       } else {
         return true;
       }
+    },
+    noCauses() {
+      return this.causes.length == 0;
     }
   }
 };
@@ -51,30 +52,5 @@ export default {
 
 .causeDiv {
   margin-bottom: 25%;
-}
-
-.loadingRing {
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.fadeIn-enter-active,
-.fadeIn-leave-active {
-  transition: opacity 0.5s;
-}
-.fadeIn-enter, .fadeIn-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
-.fadeOut-enter-active,
-.fadeOut-leave-active {
-  transition: opacity 0.5s;
-}
-.fadeOut-leave, .fadeOut-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
 }
 </style>
