@@ -34,4 +34,4 @@
 ![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/10.profile_edit_1.jpg?raw=true)
 
 ### Edir Profile - part 2
-![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/11.profile_edit_2.jpg?raw=true)
+![](https://github.com/tmollov/VueJSDonUni/blob/master/Preview%20images/11.profile_edit_2_edited.jpg?raw=true)
